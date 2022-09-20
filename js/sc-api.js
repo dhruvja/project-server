@@ -1187,7 +1187,7 @@ export const addSignatories = async (authorityWallet, signatory, projectId) => {
     );  
   console.log('admin public key: ' + admin.publicKey);  
   const sigs = [
-    signatory,
+    new PublicKey(signatory),
   ];  
   // const sigs = new PublicKey(authorityWallet);
   // const USDCMint = new PublicKey(tokenMint);
@@ -1200,12 +1200,14 @@ export const addSignatories = async (authorityWallet, signatory, projectId) => {
       })
       .signers([admin])
       .rpc();
+    console.log(tx);
 
-   const state = await projectProgram.account.projectParameter.fetch(
+   const state = await program.account.projectParameter.fetch(
       projectPDA
     );
 
-    assert(state.add.status, true);      
+    console.log(state)
+
 };
 
 
