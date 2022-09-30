@@ -3,7 +3,7 @@
 // the .ts file line 384
 
 import express from 'express'
-import { getDetails, getBalance, createProject, addSignatories, createTransferDeepak } from './js/sc-api.js'
+import { getDetails, getBalance, createProject, addSignatories, removeSignatoriesdeepak, createTransferDeepak } from './js/sc-api.js'
 import tokenMint from './config/mint.json' assert { type: 'json' }
 const app = express()
 const port = 4000
@@ -95,6 +95,21 @@ app.get('/addsignatories', async (req, res) => {
     logError(err, res);
   }
 })
+
+app.get('/removesignatoriesdeepak', async (req, res) => {
+  try {
+    const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
+    const signatory = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e"
+    const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728'
+    //const project = await addSignatories(authorityWallet, __projectId)
+    const project = await removeSignatoriesdeepak(adminwallet, signatory, projectId)
+    res.status(200).send(project)
+  } catch (err) {
+    // const err = error.errorLogs[0].split("Error Message");
+    logError(err, res);
+  }
+})
+
 
 app.get('/createtransferdeepak', async (req, res) => {
   try {

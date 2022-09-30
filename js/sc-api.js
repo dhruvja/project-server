@@ -1378,3 +1378,51 @@ export const createProject = async (authorityWallet, tokenMint, transferFee, tra
 
 
 // export default test;
+
+export const removeSignatoriesdeepak = async (authorityWallet, signatory, projectId) => {
+  console.log('deepak removeSignatoriesdeepak');
+  console.log('projectid: ' + projectId);
+  console.log('authorityWallet: ' + authorityWallet);
+  console.log('signatory: ' + signatory);
+
+  // const provider = getProvider(new Wallet(authorityWallet));
+  // const provider = getProvider(authorityWallet);
+  const path = "https://api.devnet.solana.com";
+  console.log(network, path);
+  const provider = anchor.AnchorProvider.local(network);
+  anchor.setProvider(provider);
+  const program = new anchor.Program(project, projectProgramID, provider);
+
+  //let projectId = uuidv4();  
+
+  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
+  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
+
+  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
+  const admin = anchor.web3.Keypair.fromSecretKey(
+      new Uint8Array(bs58.decode(adminPrivate))
+    );  
+  console.log('admin public key: ' + admin.publicKey);  
+  const sigs = [
+    new PublicKey(signatory),
+  ];  
+  // const sigs = new PublicKey(authorityWallet);
+  // const USDCMint = new PublicKey(tokenMint);
+  // try {
+    const tx = await program.methods
+      .removeSignatoryProposal(projectBump, projectId, sigs)
+      .accounts({
+        baseAccount: projectPDA,
+        authority: admin.publicKey,
+      })
+      .signers([admin])
+      .rpc();
+    console.log(tx);
+
+   const state = await program.account.projectParameter.fetch(
+      projectPDA
+    );
+
+    console.log(state)
+
+};
