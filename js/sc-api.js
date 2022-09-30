@@ -1210,6 +1210,108 @@ export const addSignatories = async (authorityWallet, signatory, projectId) => {
 
 };
 
+export const createTransferDeepak = async (authorityWallet, receiver, projectId, amount) => {
+  console.log('deepak createTransferDeepak');
+  console.log('projectid: ' + projectId);
+  console.log('authorityWallet: ' + authorityWallet);
+  console.log('receiver: ' + receiver);
+
+  // const provider = getProvider(new Wallet(authorityWallet));
+  // const provider = getProvider(authorityWallet);
+  const path = "https://api.devnet.solana.com";
+  console.log(network, path);
+  const provider = anchor.AnchorProvider.local(network);
+  anchor.setProvider(provider);
+  const program = new anchor.Program(project, projectProgramID, provider);
+
+  //let projectId = uuidv4();  
+
+  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
+  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
+
+  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
+  const admin = anchor.web3.Keypair.fromSecretKey(
+      new Uint8Array(bs58.decode(adminPrivate))
+    );  
+  console.log('admin public key: ' + admin.publicKey);  
+
+    const tx = await program.methods
+      .transferAmountProposal(projectBump, projectId, amount, new PublicKey(receiver))
+      .accounts({
+        baseAccount: projectPDA,
+        authority: admin.publicKey,
+      })
+      .signers([admin])
+      .rpc();
+    console.log(tx);
+
+   const state = await program.account.projectParameter.fetch(
+      projectPDA
+    );
+
+    console.log(state)
+
+};
+
+export const createProjectDeepak = async (authorityWallet, tokenMint, transferFee, transferFeeWallet) => {
+  console.log('deepak createProjectDeepak');
+  //console.log('projectid: ' + projectId);
+  console.log('authorityWallet: ' + authorityWallet);
+  console.log('tokenMint: ' + tokenMint);
+  console.log('transferFee: ' + transferFee);
+  console.log('transferFeeWallet: ' + transferFeeWallet);
+
+  // const provider = getProvider(new Wallet(authorityWallet));
+  // const provider = getProvider(authorityWallet);
+  const path = "https://api.devnet.solana.com";
+  console.log(network, path);
+  const provider = anchor.AnchorProvider.local(network);
+  anchor.setProvider(provider);
+  const program = new anchor.Program(project, projectProgramID, provider);
+
+  let projectId = uuidv4();  
+
+  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
+  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
+
+  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
+  const admin = anchor.web3.Keypair.fromSecretKey(
+      new Uint8Array(bs58.decode(adminPrivate))
+    );  
+  console.log('admin public key: ' + admin.publicKey); 
+  const adminWallet = new PublicKey(transferFeeWallet);
+
+  // const USDCMint = new PublicKey(tokenMint); // Deepak - is this needed?
+
+    const tx = await program.methods
+      .initialize(projectId, transferFee)
+      .accounts({
+        baseAccount: projectPDA,
+        projectPoolAccount: projectPoolPDA,
+        tokenMint: tokenMint,
+        authority: admin.publicKey,
+        admin: adminWallet,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: spl.TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+      })
+      .rpc();
+      return {
+        projectId,
+        tokenMint,
+        transferFee,
+        transferFeeWallet,
+        authorityWallet
+      }
+
+/*
+   const state = await program.account.projectParameter.fetch(
+      projectPDA
+    );
+
+    console.log(state)
+*/
+};
 
 export const createProject = async (authorityWallet, tokenMint, transferFee, transferFeeWallet) => {
   const provider = getProvider(new Wallet(authorityWallet));

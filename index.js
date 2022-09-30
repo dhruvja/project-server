@@ -3,7 +3,7 @@
 // the .ts file line 384
 
 import express from 'express'
-import { getDetails, getBalance, createProject, addSignatories } from './js/sc-api.js'
+import { getDetails, getBalance, createProject, addSignatories, createTransferDeepak } from './js/sc-api.js'
 import tokenMint from './config/mint.json' assert { type: 'json' }
 const app = express()
 const port = 4000
@@ -62,6 +62,26 @@ app.post('/project', async (req, res) => {
   }
 })
 
+// deepak - NOT WORKING - waiting for developer to check
+app.get('/createprojectdeepak', async (req, res) => {
+  try {
+    //const authorityWallet = "34JTPyR8b9hzkQbpow2R46iv2ZytDXW88UH5XpV1xonZ"
+    const authorityWallet = "FUMWGS2GkQcaUsYHCQVa41wxJCYMYf28yeox2joChmT4" //alice
+    console.log('deepak authorityWallet: ' + authorityWallet);    
+    const transferFeeWallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg" // admin
+    console.log('deepak transferFeeWallet: ' + transferFeeWallet);    
+    const transferFee = 0.1
+    console.log('deepak transferFee: ' + transferFee);
+    console.log('deepak token mint: ' + tokenMint);
+    const project = await createProject(authorityWallet, tokenMint, transferFee, transferFeeWallet)
+    console.log('deepak project: ' + project);
+    res.status(200).send(project)
+  } catch (err) {
+    // const err = error.errorLogs[0].split("Error Message");
+    logError(err, res);
+  }
+})
+
 app.get('/addsignatories', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
@@ -75,6 +95,21 @@ app.get('/addsignatories', async (req, res) => {
     logError(err, res);
   }
 })
+
+app.get('/createtransferdeepak', async (req, res) => {
+  try {
+    const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
+    const receiver = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e"                      
+    const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728'
+    //const project = await addSignatories(authorityWallet, __projectId)
+    const project = await createTransferDeepak(adminwallet, receiver, projectId, 0.1)
+    res.status(200).send(project)
+  } catch (err) {
+    // const err = error.errorLogs[0].split("Error Message");
+    logError(err, res);
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`DAOStreet Smart Contract Service listening on port ${port}`)
