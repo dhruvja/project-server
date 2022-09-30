@@ -89,11 +89,16 @@ app.get('/createprojectdeepak', async (req, res) => {
   }
 })
 
+/*
+create api returns
+{"projectId":"1c5bd71f-4486-4196-b458-7384c465a05f","tokenMint":"AmA4TR9ipSJb7rsPm7qpyzwcJVVbdCrjqSJYDkWQzor7","transferFee":1,"transferFeeWallet":"GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg","authorityWallet":"FUMWGS2GkQcaUsYHCQVa41wxJCYMYf28yeox2joChmT4"}
+*/
 app.get('/addsignatories', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
-    const signatory = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e"
-    const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728'
+    const signatory = "7pTRjd48ZshMNevo5XnqrKXRrBLMdhFh36gJFcrvMjKh" // bob
+    // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works too
+    const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f' // from create project api called by alice
     //const project = await addSignatories(authorityWallet, __projectId)
     const project = await addSignatories(adminwallet, signatory, projectId)
     res.status(200).send(project)
@@ -106,8 +111,9 @@ app.get('/addsignatories', async (req, res) => {
 app.get('/removesignatoriesdeepak', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
-    const signatory = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e"
-    const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728'
+    const signatory = "7pTRjd48ZshMNevo5XnqrKXRrBLMdhFh36gJFcrvMjKh"
+    // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works
+    const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f'
     //const project = await addSignatories(authorityWallet, __projectId)
     const project = await removeSignatoriesdeepak(adminwallet, signatory, projectId)
     res.status(200).send(project)
