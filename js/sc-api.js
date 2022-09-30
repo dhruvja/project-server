@@ -1313,9 +1313,12 @@ export const createProjectDeepak = async (authorityWallet, tokenMint, transferFe
 */
 };
 
-export const createProject = async (authorityWallet, tokenMint, transferFee, transferFeeWallet) => {
-  const provider = getProvider(new Wallet(authorityWallet));
-  const program = new Program(project, projectProgramID, provider);
+export const createProject = async (authorityWallet, tokenMint, transferFee, transferFeeWallet, authorityKeyPair) => {
+  const path = "https://api.devnet.solana.com";
+  console.log(network, path);
+  const provider = anchor.AnchorProvider.local(network);
+  anchor.setProvider(provider);
+  const program = new anchor.Program(project, projectProgramID, provider);
 
   let projectId = uuidv4();
 
@@ -1329,13 +1332,14 @@ export const createProject = async (authorityWallet, tokenMint, transferFee, tra
       .accounts({
         baseAccount: projectPDA,
         projectPoolAccount: projectPoolPDA,
-        tokenMint: tokenMint,
-        authority: authorityWallet,
-        admin: transferFeeWallet,
+        tokenMint: new PublicKey(tokenMint),
+        authority: new PublicKey(authorityWallet),
+        admin: new PublicKey(transferFeeWallet),
         systemProgram: SystemProgram.programId,
         tokenProgram: spl.TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
       })
+      .signers([authorityKeyPair])
       .rpc();
       return {
         projectId,

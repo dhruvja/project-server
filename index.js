@@ -5,6 +5,8 @@
 import express from 'express'
 import { getDetails, getBalance, createProject, addSignatories, removeSignatoriesdeepak, createTransferDeepak } from './js/sc-api.js'
 import tokenMint from './config/mint.json' assert { type: 'json' }
+import { Keypair } from '@solana/web3.js'
+import bs58 from 'bs58'
 const app = express()
 const port = 4000
 const __wallet = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e";
@@ -68,12 +70,17 @@ app.get('/createprojectdeepak', async (req, res) => {
     //const authorityWallet = "34JTPyR8b9hzkQbpow2R46iv2ZytDXW88UH5XpV1xonZ"
     const authorityWallet = "FUMWGS2GkQcaUsYHCQVa41wxJCYMYf28yeox2joChmT4" //alice
     console.log('deepak authorityWallet: ' + authorityWallet);    
+    const authorityKeyPair = Keypair.fromSecretKey(
+      bs58.decode(
+        "472ZS33Lftn7wdM31QauCkmpgFKFvgBRg6Z6NGtA6JgeRi1NfeZFRNvNi3b3sh5jvrQWrgiTimr8giVs9oq4UM5g"
+      )
+    );
     const transferFeeWallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg" // admin
     console.log('deepak transferFeeWallet: ' + transferFeeWallet);    
-    const transferFee = 0.1
+    const transferFee = 1 
     console.log('deepak transferFee: ' + transferFee);
     console.log('deepak token mint: ' + tokenMint);
-    const project = await createProject(authorityWallet, tokenMint, transferFee, transferFeeWallet)
+    const project = await createProject(authorityWallet, tokenMint, transferFee, transferFeeWallet, authorityKeyPair)
     console.log('deepak project: ' + project);
     res.status(200).send(project)
   } catch (err) {
