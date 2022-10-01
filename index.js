@@ -3,7 +3,7 @@
 // the .ts file line 384
 
 import express from 'express'
-import { getDetails, getBalance, createProject, addSignatories, removeSignatoriesdeepak, createTransferDeepak } from './js/sc-api.js'
+import { getDetails, getBalance, createProject, addSignatories, removeSignatoriesdeepak, createTransferDeepak, changeTimeLimit, changeThresholddeepak } from './js/sc-api.js'
 import tokenMint from './config/mint.json' assert { type: 'json' }
 import { Keypair } from '@solana/web3.js'
 import bs58 from 'bs58'
@@ -138,6 +138,37 @@ app.get('/createtransferdeepak', async (req, res) => {
   }
 })
 
+
+app.get('/changeThresholddeepak', async (req, res) => {
+  try {
+    const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
+    const threshold = 1
+    const currentTimestamp = new Date().getTime() / 1000;
+    // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works
+    const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f'
+    //const project = await addSignatories(authorityWallet, __projectId)
+    const project = await changeThresholddeepak(adminwallet, threshold, currentTimestamp, projectId)
+    res.status(200).send(project)
+  } catch (err) {
+    // const err = error.errorLogs[0].split("Error Message");
+    logError(err, res);
+  }
+})
+
+app.get('/changeTimelimitdeepak', async (req, res) => {
+  try {
+    const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
+    const timeLimit = 1000
+    // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works
+    const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f'
+    //const project = await addSignatories(authorityWallet, __projectId)
+    const project = await changeTimeLimit(adminwallet, timeLimit, projectId)
+    res.status(200).send(project)
+  } catch (err) {
+    // const err = error.errorLogs[0].split("Error Message");
+    logError(err, res);
+  }
+})
 
 app.listen(port, () => {
   console.log(`DAOStreet Smart Contract Service listening on port ${port}`)
