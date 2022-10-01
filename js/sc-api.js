@@ -67,7 +67,7 @@ async function findProgramAddress(programType, projectId, program) {
 
 // individually exported methods
 export const getDetails =  async (wallet, projectId) => {
-  console.log('deepak get details')
+  console.log('method call begins:  get details')
   console.log('projectId: ' + projectId);
   console.log('wallet: ' + wallet);
   const provider = getProvider(wallet);
@@ -77,7 +77,7 @@ export const getDetails =  async (wallet, projectId) => {
 }
 
 export const getBalance = async (wallet, tokenMint) => {
-  console.log('deepak getBalance')
+  console.log('method call begins:  getBalance')
   console.log('tokenMint: ' + tokenMint);
   console.log('wallet: ' + wallet);  
   const mint = new PublicKey(tokenMint);
@@ -124,7 +124,7 @@ const initcommon = async (projectId) => {
 }
 
 export const addSignatories = async (authorityWallet, signatory, projectId) => {
-  console.log('deepak addSignatories');
+  console.log('method call begins:  addSignatories');
   console.log('projectid: ' + projectId);
   console.log('authorityWallet: ' + authorityWallet);
   console.log('signatory: ' + signatory);
@@ -154,8 +154,8 @@ export const addSignatories = async (authorityWallet, signatory, projectId) => {
 
 };
 
-export const createTransferDeepak = async (authorityWallet, receiver, projectId, amount) => {
-  console.log('deepak createTransferDeepak');
+export const createTransfer = async (authorityWallet, receiver, projectId, amount) => {
+  console.log('method call begins:  createTransfer');
   console.log('projectid: ' + projectId);
   console.log('authorityWallet: ' + authorityWallet);
   console.log('receiver: ' + receiver);
@@ -214,8 +214,8 @@ export const createProject = async (authorityWallet, tokenMint, transferFee, tra
 
 // export default test;
 
-export const removeSignatoriesdeepak = async (authorityWallet, signatory, projectId) => {
-  console.log('deepak removeSignatoriesdeepak');
+export const removeSignatories = async (authorityWallet, signatory, projectId) => {
+  console.log('method call begins:  removeSignatories');
   console.log('projectid: ' + projectId);
   console.log('authorityWallet: ' + authorityWallet);
   console.log('signatory: ' + signatory);
@@ -246,8 +246,8 @@ export const removeSignatoriesdeepak = async (authorityWallet, signatory, projec
 
 };
 
-export const changeThresholddeepak = async (authorityWallet, threshold, currentTimestamp, projectId) => {
-  console.log('deepak changeThresholddeepak');
+export const changeThreshold = async (authorityWallet, threshold, currentTimestamp, projectId) => {
+  console.log('method call begins:  changeThreshold');
   console.log('projectid: ' + projectId);
   console.log('authorityWallet: ' + authorityWallet);
   console.log('threshold: ' + threshold);
@@ -274,7 +274,7 @@ export const changeThresholddeepak = async (authorityWallet, threshold, currentT
 };
 
 export const changeTimeLimit = async (authorityWallet, timelimit, projectId) => {
-  console.log('deepak changeThresholddeepak');
+  console.log('method call begins:  changeThreshold');
   console.log('projectid: ' + projectId);
   console.log('authorityWallet: ' + authorityWallet);
   console.log('timelimit: ' + timelimit);

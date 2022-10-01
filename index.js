@@ -3,7 +3,7 @@
 // the .ts file line 384
 
 import express from 'express'
-import { getDetails, getBalance, createProject, addSignatories, removeSignatoriesdeepak, createTransferDeepak, changeTimeLimit, changeThresholddeepak } from './js/sc-api.js'
+import { getDetails, getBalance, createProject, addSignatories, removeSignatories, createTransfer, changeTimeLimit, changeThreshold } from './js/sc-api.js'
 import tokenMint from './config/mint.json' assert { type: 'json' }
 import { Keypair } from '@solana/web3.js'
 import bs58 from 'bs58'
@@ -43,7 +43,7 @@ app.get('/details', async (req, res) => {
 app.get('/walletbalance', async (req, res) => {
   try {
     const wallet = req.headers["x-wallet"]
-    console.log('deepak /walletbalance wallet: ' + wallet);  
+    console.log('log /walletbalance wallet: ' + wallet);  
     const balance = await getBalance('3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e', tokenMint)
     res.status(200).send(balance)
   } catch (err) {
@@ -64,24 +64,23 @@ app.post('/project', async (req, res) => {
   }
 })
 
-// deepak - NOT WORKING - waiting for developer to check
-app.get('/createprojectdeepak', async (req, res) => {
+app.get('/createproject', async (req, res) => {
   try {
     //const authorityWallet = "34JTPyR8b9hzkQbpow2R46iv2ZytDXW88UH5XpV1xonZ"
     const authorityWallet = "FUMWGS2GkQcaUsYHCQVa41wxJCYMYf28yeox2joChmT4" //alice
-    console.log('deepak authorityWallet: ' + authorityWallet);    
+    console.log('log authorityWallet: ' + authorityWallet);    
     const authorityKeyPair = Keypair.fromSecretKey(
       bs58.decode(
         "472ZS33Lftn7wdM31QauCkmpgFKFvgBRg6Z6NGtA6JgeRi1NfeZFRNvNi3b3sh5jvrQWrgiTimr8giVs9oq4UM5g"
       )
     );
     const transferFeeWallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg" // admin
-    console.log('deepak transferFeeWallet: ' + transferFeeWallet);    
+    console.log('log transferFeeWallet: ' + transferFeeWallet);    
     const transferFee = 1 
-    console.log('deepak transferFee: ' + transferFee);
-    console.log('deepak token mint: ' + tokenMint);
+    console.log('log transferFee: ' + transferFee);
+    console.log('log token mint: ' + tokenMint);
     const project = await createProject(authorityWallet, tokenMint, transferFee, transferFeeWallet, authorityKeyPair)
-    console.log('deepak project: ' + project);
+    console.log('log project: ' + project);
     res.status(200).send(project)
   } catch (err) {
     // const err = error.errorLogs[0].split("Error Message");
@@ -108,14 +107,14 @@ app.get('/addsignatories', async (req, res) => {
   }
 })
 
-app.get('/removesignatoriesdeepak', async (req, res) => {
+app.get('/removesignatories', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
     const signatory = "7pTRjd48ZshMNevo5XnqrKXRrBLMdhFh36gJFcrvMjKh"
     // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works
     const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f'
     //const project = await addSignatories(authorityWallet, __projectId)
-    const project = await removeSignatoriesdeepak(adminwallet, signatory, projectId)
+    const project = await removeSignatories(adminwallet, signatory, projectId)
     res.status(200).send(project)
   } catch (err) {
     // const err = error.errorLogs[0].split("Error Message");
@@ -124,13 +123,13 @@ app.get('/removesignatoriesdeepak', async (req, res) => {
 })
 
 
-app.get('/createtransferdeepak', async (req, res) => {
+app.get('/createtransfer', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
     const receiver = "3tNtYBDamHzy5G54pybYYCEREJdVBCyMrHVDAC8ccA5e"                      
     const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728'
     //const project = await addSignatories(authorityWallet, __projectId)
-    const project = await createTransferDeepak(adminwallet, receiver, projectId, 0.1)
+    const project = await createTransfer(adminwallet, receiver, projectId, 0.1)
     res.status(200).send(project)
   } catch (err) {
     // const err = error.errorLogs[0].split("Error Message");
@@ -139,7 +138,7 @@ app.get('/createtransferdeepak', async (req, res) => {
 })
 
 
-app.get('/changeThresholddeepak', async (req, res) => {
+app.get('/changeThreshold', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
     const threshold = 1
@@ -147,7 +146,7 @@ app.get('/changeThresholddeepak', async (req, res) => {
     // const projectId = '8d374d4f-5263-4fa3-822a-3811ed83d728' // works
     const projectId = '1c5bd71f-4486-4196-b458-7384c465a05f'
     //const project = await addSignatories(authorityWallet, __projectId)
-    const project = await changeThresholddeepak(adminwallet, threshold, currentTimestamp, projectId)
+    const project = await changeThreshold(adminwallet, threshold, currentTimestamp, projectId)
     res.status(200).send(project)
   } catch (err) {
     // const err = error.errorLogs[0].split("Error Message");
@@ -155,7 +154,7 @@ app.get('/changeThresholddeepak', async (req, res) => {
   }
 })
 
-app.get('/changeTimelimitdeepak', async (req, res) => {
+app.get('/changeTimelimit', async (req, res) => {
   try {
     const adminwallet = "GiUWC6Bx55syrpvxeiCZj9fADLyTEvv2e8kVqneuBVBg"
     const timeLimit = 1000
