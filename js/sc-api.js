@@ -98,11 +98,9 @@ export const getBalance = async (wallet, tokenMint) => {
   }
 }
 
-export const addSignatories = async (authorityWallet, signatory, projectId) => {
-  console.log('deepak addSignatories');
+const initcommon = async (projectId) => {
+  console.log('init common');
   console.log('projectid: ' + projectId);
-  console.log('authorityWallet: ' + authorityWallet);
-  console.log('signatory: ' + signatory);
 
   // const provider = getProvider(new Wallet(authorityWallet));
   // const provider = getProvider(authorityWallet);
@@ -121,7 +119,17 @@ export const addSignatories = async (authorityWallet, signatory, projectId) => {
   const admin = anchor.web3.Keypair.fromSecretKey(
       new Uint8Array(bs58.decode(adminPrivate))
     );  
-  console.log('admin public key: ' + admin.publicKey);  
+  console.log('admin public key: ' + admin.publicKey);
+  return [admin, projectPDA, projectBump, projectPoolPDA, program]  
+}
+
+export const addSignatories = async (authorityWallet, signatory, projectId) => {
+  console.log('deepak addSignatories');
+  console.log('projectid: ' + projectId);
+  console.log('authorityWallet: ' + authorityWallet);
+  console.log('signatory: ' + signatory);
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
+
   const sigs = [
     new PublicKey(signatory),
   ];  
@@ -152,24 +160,7 @@ export const createTransferDeepak = async (authorityWallet, receiver, projectId,
   console.log('authorityWallet: ' + authorityWallet);
   console.log('receiver: ' + receiver);
 
-  // const provider = getProvider(new Wallet(authorityWallet));
-  // const provider = getProvider(authorityWallet);
-  const path = "https://api.devnet.solana.com";
-  console.log(network, path);
-  const provider = anchor.AnchorProvider.local(network);
-  anchor.setProvider(provider);
-  const program = new anchor.Program(project, projectProgramID, provider);
-
-  //let projectId = uuidv4();  
-
-  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
-  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
-
-  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
-  const admin = anchor.web3.Keypair.fromSecretKey(
-      new Uint8Array(bs58.decode(adminPrivate))
-    );  
-  console.log('admin public key: ' + admin.publicKey);  
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
 
     const tx = await program.methods
       .transferAmountProposal(projectBump, projectId, amount, new PublicKey(receiver))
@@ -190,16 +181,10 @@ export const createTransferDeepak = async (authorityWallet, receiver, projectId,
 };
 
 export const createProject = async (authorityWallet, tokenMint, transferFee, transferFeeWallet, authorityKeyPair) => {
-  const path = "https://api.devnet.solana.com";
-  console.log(network, path);
-  const provider = anchor.AnchorProvider.local(network);
-  anchor.setProvider(provider);
-  const program = new anchor.Program(project, projectProgramID, provider);
 
   let projectId = uuidv4();
 
-  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
-  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
 
 // const USDCMint = new PublicKey(tokenMint);
   // try {
@@ -235,24 +220,8 @@ export const removeSignatoriesdeepak = async (authorityWallet, signatory, projec
   console.log('authorityWallet: ' + authorityWallet);
   console.log('signatory: ' + signatory);
 
-  // const provider = getProvider(new Wallet(authorityWallet));
-  // const provider = getProvider(authorityWallet);
-  const path = "https://api.devnet.solana.com";
-  console.log(network, path);
-  const provider = anchor.AnchorProvider.local(network);
-  anchor.setProvider(provider);
-  const program = new anchor.Program(project, projectProgramID, provider);
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
 
-  //let projectId = uuidv4();  
-
-  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
-  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
-
-  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
-  const admin = anchor.web3.Keypair.fromSecretKey(
-      new Uint8Array(bs58.decode(adminPrivate))
-    );  
-  console.log('admin public key: ' + admin.publicKey);  
   const sigs = [
     new PublicKey(signatory),
   ];  
@@ -284,24 +253,7 @@ export const changeThresholddeepak = async (authorityWallet, threshold, currentT
   console.log('threshold: ' + threshold);
   console.log('currentTimestamp: ' + currentTimestamp);  
 
-  // const provider = getProvider(new Wallet(authorityWallet));
-  // const provider = getProvider(authorityWallet);
-  const path = "https://api.devnet.solana.com";
-  console.log(network, path);
-  const provider = anchor.AnchorProvider.local(network);
-  anchor.setProvider(provider);
-  const program = new anchor.Program(project, projectProgramID, provider);
-
-  //let projectId = uuidv4();  
-
-  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
-  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
-
-  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
-  const admin = anchor.web3.Keypair.fromSecretKey(
-      new Uint8Array(bs58.decode(adminPrivate))
-    );  
-  console.log('admin public key: ' + admin.publicKey);  
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
 
     const tx = await program.methods
       .changeThresholdProposal(projectBump, projectId, threshold, currentTimestamp)
@@ -327,24 +279,7 @@ export const changeTimeLimit = async (authorityWallet, timelimit, projectId) => 
   console.log('authorityWallet: ' + authorityWallet);
   console.log('timelimit: ' + timelimit);
 
-  // const provider = getProvider(new Wallet(authorityWallet));
-  // const provider = getProvider(authorityWallet);
-  const path = "https://api.devnet.solana.com";
-  console.log(network, path);
-  const provider = anchor.AnchorProvider.local(network);
-  anchor.setProvider(provider);
-  const program = new anchor.Program(project, projectProgramID, provider);
-
-  //let projectId = uuidv4();  
-
-  const [projectPDA, projectBump] = await findProgramAddress("project", projectId, program);
-  const [projectPoolPDA, projectPoolBump] = await findProgramAddress("pool", projectId, program);
-
-  const adminPrivate = '2HKjYz8yfQxxhRS5f17FRCx9kDp7ATF5R4esLnKA4VaUsMA5zquP5XkQmvv9J5ZUD6wAjD4iBPYXDzQDNZmQ1eki';
-  const admin = anchor.web3.Keypair.fromSecretKey(
-      new Uint8Array(bs58.decode(adminPrivate))
-    );  
-  console.log('admin public key: ' + admin.publicKey);  
+  const [admin, projectPDA, projectBump, projectPoolPDA, program] = await initcommon(projectId);
 
     const tx = await program.methods
       .changeTimeLimitProposal(projectBump, projectId, timelimit)
